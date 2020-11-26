@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>toyjack&#39;s blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://toyjack.net/"/>
+  <updated>2020-11-26T04:06:54.048Z</updated>
+  <id>http://toyjack.net/</id>
+  
+  <author>
+    <name>toyjack</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LuaLaTexでのフォントフォールバック</title>
+    <link href="http://toyjack.net/2020/11/26/setting-hanazono-font-with-lualatex/"/>
+    <id>http://toyjack.net/2020/11/26/setting-hanazono-font-with-lualatex/</id>
+    <published>2020-11-25T16:02:41.000Z</published>
+    <updated>2020-11-26T04:06:54.048Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="LuaLaTexでのフォントフォールバック"><a href="#LuaLaTexでのフォントフォールバック" class="headerlink" title="LuaLaTexでのフォントフォールバック"></a>LuaLaTexでのフォントフォールバック</h1><h2 id="latexmkの設定"><a href="#latexmkの設定" class="headerlink" title="latexmkの設定"></a>latexmkの設定</h2><p><code>.latexmkrc</code>のファイルに</p><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env perl</span></span><br><span class="line"></span><br><span class="line">@default_files    = (<span class="string">&#x27;main.tex&#x27;</span>);</span><br><span class="line">$aux_dir          = <span class="string">&quot;build/&quot;</span>;</span><br><span class="line">$out_dir          = <span class="string">&quot;build/&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$lualatex = <span class="string">&#x27;lualatex -shell-escape -synctex=1 -interaction=nonstopmode %O %S&#x27;</span>;</span><br><span class="line">$biber = <span class="string">&#x27;biber %O --bblencoding=utf8 -u -U --output_safechars %B&#x27;</span>;</span><br><span class="line">$bibtex = <span class="string">&#x27;upbibtex %O %B&#x27;</span>;</span><br><span class="line">$pdf_mode = <span class="number">1</span>;</span><br></pre></td></tr></table></figure><h2 id="VScodeの設定"><a href="#VScodeの設定" class="headerlink" title="VScodeの設定"></a>VScodeの設定</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;latex-workshop.latex.recipes&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;latexmk&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;tools&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;latexmk&quot;</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;latex-workshop.latex.tools&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;latexmk&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;latexmk&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;args&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;-lualatex&quot;</span>,</span><br><span class="line">                <span class="comment">// &quot;-silent&quot;,</span></span><br><span class="line">                <span class="string">&quot;%DOC%&quot;</span></span><br><span class="line">            ],</span><br><span class="line">        &#125;,</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="花園フォントをTexLiveにインストール"><a href="#花園フォントをTexLiveにインストール" class="headerlink" title="花園フォントをTexLiveにインストール"></a>花園フォントをTexLiveにインストール</h2><p>コマンドラインで<code>kpsewhich -show-path=&quot;truetype fonts&quot;</code>、True Typeフォントがインストールされた場所を探す。<br>Windowsではデフォルトの場所が<code>C:/texlive/texmf-local/fonts/opentype/</code>となる。<br>そこに花園フォントを解凍して、<code>HanaMinA.ttf</code>と<code>HanaMinB.ttf</code>は<code>C:/texlive/texmf-local/fonts/opentype/hanazono/</code>の下に置いとく。</p><p>最後にコマンドラインで<code>mktexlsr</code>を実行する。</p><h2 id="TEXファイルの書き方"><a href="#TEXファイルの書き方" class="headerlink" title="TEXファイルの書き方"></a>TEXファイルの書き方</h2><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\documentclass</span>[a4paper, twocolumn, 11pt, openany]&#123;ltjsbook&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;luatexja&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>[no-math]&#123;luatexja-fontspec&#125;</span><br><span class="line"><span class="comment">% 参考先：https://gist.github.com/zr-tex8r/3a24777a287f8c092389cd15d92b64c1</span></span><br><span class="line"><span class="comment">% BMPはHanaMinA, SIPはHanaMinB, ただし可能ならIPAexMincho</span></span><br><span class="line"><span class="comment">% で置き換える, という設定</span></span><br><span class="line"><span class="keyword">\setmainjfont</span>[AltFont=&#123;</span><br><span class="line">  &#123;Range=&quot;20000-&quot;2FFFF, Font=HanaMinB.ttf&#125;,</span><br><span class="line">  &#123;Range=&quot;0080-&quot;FFFF, Font=HaranoAjiMincho-Regular.otf&#125;,</span><br><span class="line">&#125;]&#123;HanaMinA.ttf&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;LuaLaTexでのフォントフォールバック&quot;&gt;&lt;a href=&quot;#LuaLaTexでのフォントフォールバック&quot; class=&quot;headerlink&quot; title=&quot;LuaLaTexでのフォントフォールバック&quot;&gt;&lt;/a&gt;LuaLaTexでのフォントフォールバック&lt;/
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>無料のGitHub Pagesへ引っ越した</title>
+    <link href="http://toyjack.net/2018/01/09/moved-to-github-pages/"/>
+    <id>http://toyjack.net/2018/01/09/moved-to-github-pages/</id>
+    <published>2018-01-09T10:15:51.000Z</published>
+    <updated>2020-11-26T04:06:54.048Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id><a href="#" class="headerlink" title></a></h2><p>今年のAWS学割はまだもらってないため、AWSにあるEC2のサーバを止めた。<br>このブログをS3へ移動しようかと迷ってたけど、やっぱ無料のGitHub Pagesで十分だと考えた。</p><blockquote><p>無料最高！</p></blockquote><p>だが、DNSホストはまだRoute 53を利用している…<br>来年はどっかに移すかな</p><p>参考資料：</p><p><a href="https://help.github.com/articles/setting-up-an-apex-domain/">Setting up an apex domain</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id&gt;&lt;a href=&quot;#&quot; class=&quot;headerlink&quot; title&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;今年のAWS学割はまだもらってないため、AWSにあるEC2のサーバを止めた。&lt;br&gt;このブログをS3へ移動しようかと迷ってたけど、やっぱ無料のGitHub Pagesで
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>WordPressをやめ、Hexoへ変換しました</title>
+    <link href="http://toyjack.net/2017/06/07/start-using-hexo/"/>
+    <id>http://toyjack.net/2017/06/07/start-using-hexo/</id>
+    <published>2017-06-06T18:20:20.000Z</published>
+    <updated>2020-11-26T04:06:54.049Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="はじめに"><a href="#はじめに" class="headerlink" title="はじめに"></a>はじめに</h2><p>タイトルの通り、WordPressをやめました。理由は重いです😂。<br>現時点まで（2017/06/07）本ブログはAWSのEC2を利用しています。GitHubの<a href="https://education.github.com/">Education Pack</a>から毎年75ドルのAWSクーポンがもらえます。それを使って、EC2のt2.nanoを年間払いにしてほぼ無料でVPSを利用できます。<br>しかし、t2.nanoのメモリは…なんと512MBしかありません。swap領域を追加しても（しかもAmazon Linuxは手動です）、WordPressに必須なMySQLはよく落ちます。毎日数回<code>sudo service mysql start</code>入力しないと…<br>（なんかのスクリプトでも解決できるらしいですけど、さすがめんどいし、ページのローディングも遅いし、やっぱり512MB、1coreのVPSは辛いっすね）<br>で、以上の理由で静的なHexoに変えました。</p><h2 id="WordPressからHexoへの移行"><a href="#WordPressからHexoへの移行" class="headerlink" title="WordPressからHexoへの移行"></a>WordPressからHexoへの移行</h2><p>文章の移行は簡単です。Hexo公式サイトの[ガイド](```<br><a href="https://hexo.io/docs/migration.html">https://hexo.io/docs/migration.html</a></p><p>```)に従ってやれば大丈夫だと思います。<br>問題は文章の中の画像ですね😭<br>元の画像はWordPressのメディアライブラリによって管理されて、</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;はじめに&quot;&gt;&lt;a href=&quot;#はじめに&quot; class=&quot;headerlink&quot; title=&quot;はじめに&quot;&gt;&lt;/a&gt;はじめに&lt;/h2&gt;&lt;p&gt;タイトルの通り、WordPressをやめました。理由は重いです😂。&lt;br&gt;現時点まで（2017/06/07）本ブログはAW
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>[MAC]karabiner-elements使ってUSキーボードを快適に</title>
+    <link href="http://toyjack.net/2017/04/30/%5BMAC%5Dkarabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/"/>
+    <id>http://toyjack.net/2017/04/30/[MAC]karabiner-elements使ってUSキーボードを快適に/</id>
+    <published>2017-04-30T06:28:28.000Z</published>
+    <updated>2020-11-26T04:06:54.029Z</updated>
+    
+    <content type="html"><![CDATA[<p>スマホ弄りすぎか、<del datetime="2017-04-30T14:27:35+00:00">ゴミ</del>論文書き過ぎるか、なんか腱鞘炎になりそうな気がします。右手の親指の第一関節と第二関節がズキズキ痛いです。<br>そのため、１日ネットでRealforceのキーボードさがしてサボりました。<br>去年、母国で買った<del datetime="2017-04-30T14:27:35+00:00">あやしい中華</del>キーボードを思い出したら、とりあえずそれで作業やろうかなっていう経緯です。</p><p><a href="IMG_0242.jpg"><img src="/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0242.jpg"></a></p><a id="more"></a><p>こういうミニなやつです。使いにくいではないけど、赤軸とスチールプレードのせいで、打鍵音が大きくて、昼間は絶対研究室の近所迷惑となります。なので、ずっと封印されている状態でした。最近研究室のみなさんが割と早めに退室ので、夜でも使ってみようかっていう感じです。</p><p>で、本<del>論</del>題に入りましょう。karabiner-elementsで配列を調整します。MacのJIS配列なれたので、次のように調整したいです。</p><ul><li>  CapsとControll交換</li><li>  左CMDとOPT交換</li><li>  右OPTをCMDにする</li><li>  単独で左CMDを押すと英数とする</li><li>  単独で右CMDを押すとかなとする</li></ul><p>ファンクションキーを単独機能するには、ちょっと特別なバージョンのkarabiner-elementsがいる。<a href="https://github.com/wwwjfy/Karabiner-Elements/releases">wwwjfy/Karabiner-Elements</a>でダウンロードする。そして、~/.config/karabiner/karabiner.jsonを次にように編集して</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;global&quot;: &#123;</span><br><span class="line">        &quot;check_for_updates_on_startup&quot;: true,</span><br><span class="line">        &quot;show_in_menu_bar&quot;: true,</span><br><span class="line">        &quot;show_profile_name_in_menu_bar&quot;: false</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;profiles&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;devices&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: true,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 7,</span><br><span class="line">                        &quot;vendor_id&quot;: 1278</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: true,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 0,</span><br><span class="line">                        &quot;vendor_id&quot;: 13</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: false</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: true,</span><br><span class="line">                        &quot;product_id&quot;: 45075,</span><br><span class="line">                        &quot;vendor_id&quot;: 1133</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 627,</span><br><span class="line">                        &quot;vendor_id&quot;: 1452</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 65535,</span><br><span class="line">                        &quot;vendor_id&quot;: 1452</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;fn_function_keys&quot;: &#123;</span><br><span class="line">                &quot;f1&quot;: &quot;display_brightness_decrement&quot;,</span><br><span class="line">                &quot;f10&quot;: &quot;mute&quot;,</span><br><span class="line">                &quot;f11&quot;: &quot;volume_decrement&quot;,</span><br><span class="line">                &quot;f12&quot;: &quot;volume_increment&quot;,</span><br><span class="line">                &quot;f2&quot;: &quot;display_brightness_increment&quot;,</span><br><span class="line">                &quot;f3&quot;: &quot;mission_control&quot;,</span><br><span class="line">                &quot;f4&quot;: &quot;launchpad&quot;,</span><br><span class="line">                &quot;f5&quot;: &quot;illumination_decrement&quot;,</span><br><span class="line">                &quot;f6&quot;: &quot;illumination_increment&quot;,</span><br><span class="line">                &quot;f7&quot;: &quot;rewind&quot;,</span><br><span class="line">                &quot;f8&quot;: &quot;play_or_pause&quot;,</span><br><span class="line">                &quot;f9&quot;: &quot;fastforward&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;name&quot;: &quot;Default profile&quot;,</span><br><span class="line">            &quot;one_to_many_mappings&quot;: &#123;&#125;,</span><br><span class="line">            &quot;selected&quot;: true,</span><br><span class="line">            &quot;simple_modifications&quot;: &#123;</span><br><span class="line">                &quot;caps_lock&quot;: &quot;left_control&quot;,</span><br><span class="line">                &quot;left_command&quot;: &quot;left_option&quot;,</span><br><span class="line">                &quot;left_control&quot;: &quot;caps_lock&quot;,</span><br><span class="line">                &quot;left_option&quot;: &quot;left_command&quot;,</span><br><span class="line">                &quot;right_option&quot;: &quot;right_command&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;standalone_keys&quot;: &#123;</span><br><span class="line">                &quot;left_option&quot;: &quot;japanese_eisuu&quot;,</span><br><span class="line">                &quot;right_option&quot;: &quot;japanese_kana&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;virtual_hid_keyboard&quot;: &#123;</span><br><span class="line">                &quot;caps_lock_delay_milliseconds&quot;: 0,</span><br><span class="line">                &quot;keyboard_type&quot;: &quot;ansi&quot;,</span><br><span class="line">                &quot;standalone_keys_delay_milliseconds&quot;: 100</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><a href="IMG_0247.jpg"><img src="/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0247.jpg"></a> </p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;スマホ弄りすぎか、&lt;del datetime=&quot;2017-04-30T14:27:35+00:00&quot;&gt;ゴミ&lt;/del&gt;論文書き過ぎるか、なんか腱鞘炎になりそうな気がします。右手の親指の第一関節と第二関節がズキズキ痛いです。&lt;br&gt;そのため、１日ネットでRealforceのキーボードさがしてサボりました。&lt;br&gt;去年、母国で買った&lt;del datetime=&quot;2017-04-30T14:27:35+00:00&quot;&gt;あやしい中華&lt;/del&gt;キーボードを思い出したら、とりあえずそれで作業やろうかなっていう経緯です。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;IMG_0242.jpg&quot;&gt;&lt;img src=&quot;/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0242.jpg&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="教程" scheme="http://toyjack.net/categories/%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="mac" scheme="http://toyjack.net/tags/mac/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>VS Codeを利用してVue開発</title>
+    <link href="http://toyjack.net/2017/04/19/writting-vue-with-vscode/"/>
+    <id>http://toyjack.net/2017/04/19/writting-vue-with-vscode/</id>
+    <published>2017-04-19T01:08:39.000Z</published>
+    <updated>2020-11-26T04:06:54.049Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-ESlintの設定とそれのプラグイン"><a href="#1-ESlintの設定とそれのプラグイン" class="headerlink" title="1 ESlintの設定とそれのプラグイン"></a>1 ESlintの設定とそれのプラグイン</h2><p><code>npm -g install eslint eslint-plugin-vue eslint-config-vue</code></p><p><strong>注意</strong>：<code>eslint</code>がglobalとなる場合、プラグインの<code>eslint-plugin-vue</code>と<code>eslint-config-vue</code>もglobalにインストールしなければならない。</p><p>　続いて、プロジェクトのルートに<code>eslint --init</code>で、eslintの設定ファイルを作成する。作成された<code>.eslintrc.js</code>を次のように編集する。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">module.exports &#x3D; &#123;</span><br><span class="line">    &quot;env&quot;: &#123;</span><br><span class="line">        &quot;browser&quot;: true</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;extends&quot;: [&quot;vue&quot;,&quot;eslint:recommended&quot;],</span><br><span class="line">    &quot;plugins&quot;: [&quot;vue&quot;],</span><br><span class="line">    &quot;rules&quot;: &#123;</span><br><span class="line">        &quot;vue&#x2F;jsx-uses-vars&quot;: 2,</span><br><span class="line">        &quot;indent&quot;: [</span><br><span class="line">            &quot;error&quot;,</span><br><span class="line">            4</span><br><span class="line">        ],</span><br><span class="line">        &quot;linebreak-style&quot;: [</span><br><span class="line">            &quot;error&quot;,</span><br><span class="line">            &quot;unix&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;quotes&quot;: [</span><br><span class="line">            &quot;error&quot;,</span><br><span class="line">            &quot;double&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;semi&quot;: [</span><br><span class="line">            &quot;error&quot;,</span><br><span class="line">            &quot;always&quot;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>これでeslintの基本設定が終了しました。</p><h2 id="2-VS-Codeのプラグイン"><a href="#2-VS-Codeのプラグイン" class="headerlink" title="2 VS Codeのプラグイン"></a>2 VS Codeのプラグイン</h2><p>必要としてのプラグインは次のようにあります。</p><ul><li><a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">vetur</a></li><li><a href="https://marketplace.visualstudio.com/items?itemName=oysun.vuehelper">VueHelper</a></li><li><a href="https://marketplace.visualstudio.com/search?target=VSCode&category=Languages&sortBy=Downloads">ESLint</a></li></ul><h2 id="3-VS-Codeの設定"><a href="#3-VS-Codeの設定" class="headerlink" title="3 VS Codeの設定"></a>3 VS Codeの設定</h2><figure class="highlight plain"><figcaption><span>[</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;javascript&quot;,</span><br><span class="line">&quot;javascriptreact&quot;,</span><br><span class="line">&#123;</span><br><span class="line">    &quot;language&quot;: &quot;vue&quot;,</span><br><span class="line">    &quot;autoFix&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;emmet.syntaxProfiles&quot;: &#123;</span><br><span class="line">    &quot;vue-html&quot;: &quot;html&quot;,</span><br><span class="line">    &quot;vue&quot;: &quot;html&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;1-ESlintの設定とそれのプラグイン&quot;&gt;&lt;a href=&quot;#1-ESlintの設定とそれのプラグイン&quot; class=&quot;headerlink&quot; title=&quot;1 ESlintの設定とそれのプラグイン&quot;&gt;&lt;/a&gt;1 ESlintの設定とそれのプラグイン&lt;/h2&gt;&lt;
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="http://toyjack.net/categories/%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="vscode" scheme="http://toyjack.net/tags/vscode/"/>
+    
+      <category term="vue" scheme="http://toyjack.net/tags/vue/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Amazon Linux AMI安装配置Shadowsock-libev</title>
+    <link href="http://toyjack.net/2016/10/06/Amazon%20Linux%20AMI%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEShadowsock-libev/"/>
+    <id>http://toyjack.net/2016/10/06/Amazon Linux AMI安装配置Shadowsock-libev/</id>
+    <published>2016-10-06T09:08:28.000Z</published>
+    <updated>2020-11-26T04:06:54.028Z</updated>
+    
+    <content type="html"><![CDATA[<p>请同时参考<a href="http://hi-rain.com/2015/09/17/CentOS-7%E7%B3%BB%E7%BB%9F%E6%9E%B6%E8%AE%BEShadowsocks-libev%E6%9C%8D%E5%8A%A1%E5%99%A8/">这位的博客</a>。也可参考下面这个的CentOS部分，<a href="https://gist.github.com/aa65535/ea090063496b0d3a1748">链接</a>。但是毕竟和centos还有不同，请注意吧。</p><p>全文都是在默认用户ec2-user下完成的，除了用户目录下的操作当然都要用sudo。</p><a id="more"></a><h2 id="安装编译工具"><a href="#安装编译工具" class="headerlink" title="安装编译工具"></a>安装编译工具</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum groupinstall &quot;development tools&quot; -y</span><br></pre></td></tr></table></figure><h2 id="补充安装"><a href="#补充安装" class="headerlink" title="补充安装"></a>补充安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install openssl-devel</span><br><span class="line">sudo yum install pcre-devel #这个好像是AMI独缺的玩意儿</span><br><span class="line">sudo yum install asciidoc xmlto #嗯...这俩也是</span><br></pre></td></tr></table></figure><h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd #回到用户目录</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev.git</span><br></pre></td></tr></table></figure><h2 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;autogen.sh</span><br><span class="line">.&#x2F;configure --prefix&#x3D;&#x2F;usr #重点：不然后边都是坑</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h2><p>(注意：ECHO的话AIM是sudo不了的，貌似只能用下面这样一句一句来)</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;shadowsocks-libev</span><br><span class="line">sudo touch &#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br><span class="line">sudo vi &#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br></pre></td></tr></table></figure><p>配置文件参考开头的那位仁兄或者自己搜索下就有。</p><p>需要注意的是如果配置在AWS的VPC下，把ip的位置改为0.0.0.0（这是个大坑，也可以换用ss-local，<a href="https://github.com/shadowsocks/shadowsocks/issues/298">参考</a>）</p><h2 id="配置启动管理（直接加到rc-local感觉有点low哈哈，还是用service管理起来方便）"><a href="#配置启动管理（直接加到rc-local感觉有点low哈哈，还是用service管理起来方便）" class="headerlink" title="配置启动管理（直接加到rc.local感觉有点low哈哈，还是用service管理起来方便）"></a>配置启动管理（直接加到rc.local感觉有点low哈哈，还是用service管理起来方便）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp shadowsocks-libev&#x2F;rpm&#x2F;SOURCES&#x2F;etc&#x2F;init.d&#x2F;shadowsocks-libev &#x2F;etc&#x2F;init.d&#x2F;</span><br></pre></td></tr></table></figure><p>（shadowsocks-libev文件夹就是你git clone下来的文件夹）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x &#x2F;etc&#x2F;init.d&#x2F;shadowsocks-libev</span><br></pre></td></tr></table></figure><p>如果编译配置的时候加了–prefix=/usr，那这个文件什么都不用改的。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service shadowsocks-libev start #启动</span><br></pre></td></tr></table></figure><p>*如果提示你缺少配置文件，那就是之前的config.json没做好或者放错地方了。</p><p>到这里为止就算基本结束了，不过现在应该还用不了。因为端口还没有开放。<br>AMI基本放弃使用自己的防火墙，转而依靠AWS的安全策略来实现。（我早就受够了命令行下的防火墙策略了）<br>AWS的安全策略自己搜索吧，网上有的是教程。<br>最后一步就是：在AWS的安全策略里面打开自己设定的SS的端口，（TCP&amp;UDP）<br>OK，完成！</p><p>ps 几乎和centos一样吧😅这就对了</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;请同时参考&lt;a href=&quot;http://hi-rain.com/2015/09/17/CentOS-7%E7%B3%BB%E7%BB%9F%E6%9E%B6%E8%AE%BEShadowsocks-libev%E6%9C%8D%E5%8A%A1%E5%99%A8/&quot;&gt;这位的博客&lt;/a&gt;。也可参考下面这个的CentOS部分，&lt;a href=&quot;https://gist.github.com/aa65535/ea090063496b0d3a1748&quot;&gt;链接&lt;/a&gt;。但是毕竟和centos还有不同，请注意吧。&lt;/p&gt;
+&lt;p&gt;全文都是在默认用户ec2-user下完成的，除了用户目录下的操作当然都要用sudo。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Uncategorized" scheme="http://toyjack.net/categories/Uncategorized/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>[服务器迁移]AWS EC2东京机房以及Wordpress搬迁至nginx的小问题</title>
+    <link href="http://toyjack.net/2016/10/06/%5B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%81%E7%A7%BB%5DAWS%20EC2%E4%B8%9C%E4%BA%AC%E6%9C%BA%E6%88%BF%E4%BB%A5%E5%8F%8AWordpress%E6%90%AC%E8%BF%81%E8%87%B3nginx%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98/"/>
+    <id>http://toyjack.net/2016/10/06/[服务器迁移]AWS EC2东京机房以及Wordpress搬迁至nginx的小问题/</id>
+    <published>2016-10-06T06:38:54.000Z</published>
+    <updated>2020-11-26T04:06:54.040Z</updated>
+    
+    <content type="html"><![CDATA[<p>因为DO的学生优惠券快要用光了，再加上今年AWS的教育优惠又比去年给力，于是又开始了服务器迁徙大作战😅</p><ul><li>  新家：AWS EC2 Nano东京机房</li><li>  OS：Amazon Linux AMI<br>由原来的LAMP换成现在的LNMP，也就是吧Apache换到Nginx了。其间也出了点小问题，后文详叙。</li></ul><a id="more"></a><p>新的VPN采用了AWS中最便宜的实例，配置为单核CPU，512MB内存，基本等于DO5美元套餐。不过换成了东京机房，应该会比原来的新加坡快一点点吧。</p><p>目前只把web server服务相关迁移上线，mc服务器啥的还没时间弄，所以也不清楚性能较之前的DO有什么样的区别。</p><p>另外PHP安装了7.0版本，因为学校项目开发采用了7.0也就跟跟风咯。</p><p>Nginx设置中遇到了个小坑：</p><p>文件和数据库迁移完成后就是提示404错误，试遍网上无数办法：文件所属，权限，nginx配置文件改了又改。</p><p>结果发现忘记了安装php的mysqlnd包。。。。这就是手动配置服务器的后果啊。</p><p>其实如果正常忘记安装php-mysqlnd扩展的话，wordpress是会有提示的，可是Nginx的默认配置打开了40x，50x的跳转，于是没等看到错误信息提示就跳到了404页面。像只没头苍蝇一样排查了好久，唉。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;因为DO的学生优惠券快要用光了，再加上今年AWS的教育优惠又比去年给力，于是又开始了服务器迁徙大作战😅&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;  新家：AWS EC2 Nano东京机房&lt;/li&gt;
+&lt;li&gt;  OS：Amazon Linux AMI&lt;br&gt;由原来的LAMP换成现在的LNMP，也就是吧Apache换到Nginx了。其间也出了点小问题，后文详叙。&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="Uncategorized" scheme="http://toyjack.net/categories/Uncategorized/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Update to Debian 8.3</title>
+    <link href="http://toyjack.net/2016/03/05/update-to-debian-8-3/"/>
+    <id>http://toyjack.net/2016/03/05/update-to-debian-8-3/</id>
+    <published>2016-03-04T19:57:47.000Z</published>
+    <updated>2020-11-26T04:06:54.049Z</updated>
+    
+    <content type="html"><![CDATA[<p>RT.</p><ol><li> sudo apt-get update</li><li> sudo apt-get upgrade</li><li> vi /etc/apt/sources.list</li><li> sudo apt-get dist-upgrade</li><li> update apache2 site’s configue</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;RT.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt; sudo apt-get update&lt;/li&gt;
+&lt;li&gt; sudo apt-get upgrade&lt;/li&gt;
+&lt;li&gt; vi /etc/apt/sources.list&lt;/li&gt;
+&lt;li&gt; sudo apt-get dist-upgra
+      
+    
+    </summary>
+    
+      <category term="Uncategorized" scheme="http://toyjack.net/categories/Uncategorized/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>微软中文输入法下使用日文键盘布局</title>
+    <link href="http://toyjack.net/2014/11/05/input-chinese-in-jp-keyboards/"/>
+    <id>http://toyjack.net/2014/11/05/input-chinese-in-jp-keyboards/</id>
+    <published>2014-11-04T23:45:15.000Z</published>
+    <updated>2020-11-26T04:06:54.040Z</updated>
+    
+    <content type="html"><![CDATA[<p>前阵子潜水途中Air坏掉了，为了老师的交代的工作不得不在曼谷maileal买了台surface pro3，回到日本后又配齐了日文键盘。等于是回到了windows的怀抱，随之而来的也是个老生常谈的问题：如何在中文输入法下设置为日文键盘布局？</p><a id="more"></a><p>其实方法蛮简单的，打开注册表：</p><p>Win+R -&gt; 输入regedit -&gt; 回车</p><p>找到[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000804]</p><p>将其中的”Layout File”栏内容修改为“KBDJPN.DLL”，然后重启即可。结果如图：</p><p><a href><img src="/2014/11/05/input-chinese-in-jp-keyboards/jpkblayout.png" alt="jpkblayout"></a></p><p>为懒人们准备了注册表导入文件，下载后双击运行即可。</p><p>地址：<a href="http://toyjack.net/downloads/jpkb.reg">http://toyjack.net/downloads/jpkb.reg</a></p><p>&nbsp;</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前阵子潜水途中Air坏掉了，为了老师的交代的工作不得不在曼谷maileal买了台surface pro3，回到日本后又配齐了日文键盘。等于是回到了windows的怀抱，随之而来的也是个老生常谈的问题：如何在中文输入法下设置为日文键盘布局？&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="教程" scheme="http://toyjack.net/categories/%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="IME" scheme="http://toyjack.net/tags/IME/"/>
+    
+      <category term="Japanese" scheme="http://toyjack.net/tags/Japanese/"/>
+    
+      <category term="surface pro" scheme="http://toyjack.net/tags/surface-pro/"/>
+    
+      <category term="Windows" scheme="http://toyjack.net/tags/Windows/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>IOS8越狱后设置快门静音</title>
+    <link href="http://toyjack.net/2014/10/22/ios8-jailbreak-shutter-silent/"/>
+    <id>http://toyjack.net/2014/10/22/ios8-jailbreak-shutter-silent/</id>
+    <published>2014-10-22T09:11:25.000Z</published>
+    <updated>2020-11-26T04:06:54.041Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>苦逼的日韩版iphone相机快门音是无法被静音的，但总有需要不惊动其他人来拍照的时候把- -。趁着这次IOS8越狱给大家一个曲线救国的办法，简单思路就是SSH到iphone然后直接搞定快门音文件。</p></blockquote><a id="more"></a><p>10月22日，中国团队“盘古”率先放出IOS8的<a href="http://pangu.io/"><em>完美越狱</em></a>。并号称支持所有IOS兼容设备。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/pangu.png" alt="pangu"></a></p><p>属于傻瓜式越狱，教程参考：<a href="http://bbs.25pp.com/thread-271086-1-1.html">http://bbs.25pp.com/thread-271086-1-1.html</a></p><p>尝鲜之后却发现所谓的_完美越狱_却还没有配套的Cydia和Substrate框架支持。也就是如今绝大部分越狱后软件都无法运行。同时现有的itools等PC端管理软件也尚未支持。所以过去的静音大法都没用鸟。但，<span style="color: #ff0000;">万幸的是OpenSSH还是可以安装运行的</span>。</p><p>于是，为了久违的<span style="color: #ff0000;">静音拍照</span>才有了下面的教程。</p><p>1 安装SSH</p><p>1.1 越狱好后，点击桌面新出现的“<span style="color: #ff0000;">盘古</span>”图标。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/2014-10-23-02.40.53.png" alt="pangu_logo"></a></p><p>1.2 进入后点击页面中部的“<span style="color: #ff0000;">OpenSSH</span>”按钮。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/2014-10-23-02.38.45.png" alt="pangu1"></a></p><p>1.3 之后点击右上角的“<span style="color: #ff0000;">安装</span>”。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/2014-10-23-02.39.10.png" alt="pangu2"></a></p><p>1.4 完成后点击“<span style="color: #ff0000;">OK</span>”即可推出。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/2014-10-23-02.39.20.png" alt="paangu3"></a></p><p>&nbsp;</p><p>2 利用SSH远程登陆到iPhone</p><p>Mac系统的话自带的ssh就很好用，鉴于大家都是利用Windows来越狱的，还是介绍使用Windows下的WinSCP配合Putty来直接搞定吧。已有人加工好的WinSCP+Putty的安装包<a href="http://dl.dbank.com/c0gqqkxahn">下载地址</a>。</p><p>另外也有简单使用教程:<a href="http://bbs.feng.com/read-htm-tid-2520367.html">http://bbs.feng.com/read-htm-tid-2520367.html</a></p><p>下面来介绍连接好手机后的WinSCP操作。</p><p>连接好的界面如下：</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/winscp1.png" alt="winscp1"></a></p><p>&nbsp;</p><p>其中窗口左侧栏是PC端目录，右侧栏是手机端目录。</p><p>在右侧栏中访问到<span style="color: #ff0000;">/System/Library/Audio/UiSounds/</span>目录，如下图。</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/winscp2.png" alt="winscp2"></a></p><p>之后找到叫做<span style="color: #ff0000;">photoShutter.caf</span>的文件，将其改名或者删除。恼人的快门音就再也没有啦~</p><p><a href><img src="/2014/10/22/ios8-jailbreak-shutter-silent/winscp3.png" alt="winscp3"></a></p><p>完</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;苦逼的日韩版iphone相机快门音是无法被静音的，但总有需要不惊动其他人来拍照的时候把- -。趁着这次IOS8越狱给大家一个曲线救国的办法，简单思路就是SSH到iphone然后直接搞定快门音文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="教程" scheme="http://toyjack.net/categories/%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="IOS" scheme="http://toyjack.net/tags/IOS/"/>
+    
+      <category term="iPhone" scheme="http://toyjack.net/tags/iPhone/"/>
+    
+      <category term="ssh" scheme="http://toyjack.net/tags/ssh/"/>
+    
+  </entry>
+  
+</feed>

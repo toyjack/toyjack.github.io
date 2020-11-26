@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"toyjack.net","root":"/","images":"/images","scheme":"Muse","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"検索…","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+<meta name="description" content="请同时参考这位的博客。也可参考下面这个的CentOS部分，链接。但是毕竟和centos还有不同，请注意吧。 全文都是在默认用户ec2-user下完成的，除了用户目录下的操作当然都要用sudo。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Amazon Linux AMI安装配置Shadowsock-libev">
+<meta property="og:url" content="http://toyjack.net/2016/10/06/Amazon%20Linux%20AMI%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEShadowsock-libev/index.html">
+<meta property="og:site_name" content="toyjack&#39;s blog">
+<meta property="og:description" content="请同时参考这位的博客。也可参考下面这个的CentOS部分，链接。但是毕竟和centos还有不同，请注意吧。 全文都是在默认用户ec2-user下完成的，除了用户目录下的操作当然都要用sudo。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2016-10-06T09:08:28.000Z">
+<meta property="article:modified_time" content="2020-11-26T04:06:54.028Z">
+<meta property="article:author" content="toyjack">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://toyjack.net/2016/10/06/Amazon%20Linux%20AMI%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEShadowsock-libev/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'ja'
+  };
+</script>
+<title>Amazon Linux AMI安装配置Shadowsock-libev | toyjack's blog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="ナビゲーションバーの切り替え">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">toyjack's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          見出し
+        </li>
+        <li class="sidebar-nav-overview">
+          概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">安装编译工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">补充安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E8%AF%91"><span class="nav-number">4.</span> <span class="nav-text">开始编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">创建配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E7%AE%A1%E7%90%86%EF%BC%88%E7%9B%B4%E6%8E%A5%E5%8A%A0%E5%88%B0rc-local%E6%84%9F%E8%A7%89%E6%9C%89%E7%82%B9low%E5%93%88%E5%93%88%EF%BC%8C%E8%BF%98%E6%98%AF%E7%94%A8service%E7%AE%A1%E7%90%86%E8%B5%B7%E6%9D%A5%E6%96%B9%E4%BE%BF%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">配置启动管理（直接加到rc.local感觉有点low哈哈，还是用service管理起来方便）</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">toyjack</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">ポスト</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">カテゴリ</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">タグ</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ja">
+    <link itemprop="mainEntityOfPage" href="http://toyjack.net/2016/10/06/Amazon%20Linux%20AMI%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEShadowsock-libev/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="toyjack">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="toyjack's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Amazon Linux AMI安装配置Shadowsock-libev
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">投稿日</span>
+
+      <time title="作成日：2016-10-06 18:08:28" itemprop="dateCreated datePublished" datetime="2016-10-06T18:08:28+09:00">2016-10-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">編集日</span>
+        <time title="修正日：2020-11-26 13:06:54" itemprop="dateModified" datetime="2020-11-26T13:06:54+09:00">2020-11-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">カテゴリ</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Uncategorized/" itemprop="url" rel="index"><span itemprop="name">Uncategorized</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>请同时参考<a target="_blank" rel="noopener" href="http://hi-rain.com/2015/09/17/CentOS-7%E7%B3%BB%E7%BB%9F%E6%9E%B6%E8%AE%BEShadowsocks-libev%E6%9C%8D%E5%8A%A1%E5%99%A8/">这位的博客</a>。也可参考下面这个的CentOS部分，<a target="_blank" rel="noopener" href="https://gist.github.com/aa65535/ea090063496b0d3a1748">链接</a>。但是毕竟和centos还有不同，请注意吧。</p>
+<p>全文都是在默认用户ec2-user下完成的，除了用户目录下的操作当然都要用sudo。</p>
+<a id="more"></a>
+
+<h2 id="安装编译工具"><a href="#安装编译工具" class="headerlink" title="安装编译工具"></a>安装编译工具</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum groupinstall &quot;development tools&quot; -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="补充安装"><a href="#补充安装" class="headerlink" title="补充安装"></a>补充安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install openssl-devel</span><br><span class="line">sudo yum install pcre-devel #这个好像是AMI独缺的玩意儿</span><br><span class="line">sudo yum install asciidoc xmlto #嗯...这俩也是</span><br></pre></td></tr></table></figure>
+
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd #回到用户目录</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev.git</span><br></pre></td></tr></table></figure>
+
+<h2 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;autogen.sh</span><br><span class="line">.&#x2F;configure --prefix&#x3D;&#x2F;usr #重点：不然后边都是坑</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h2><p>(注意：ECHO的话AIM是sudo不了的，貌似只能用下面这样一句一句来)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;shadowsocks-libev</span><br><span class="line">sudo touch &#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br><span class="line">sudo vi &#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br></pre></td></tr></table></figure>
+
+<p>配置文件参考开头的那位仁兄或者自己搜索下就有。</p>
+<p>需要注意的是如果配置在AWS的VPC下，把ip的位置改为0.0.0.0（这是个大坑，也可以换用ss-local，<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks/issues/298">参考</a>）</p>
+<h2 id="配置启动管理（直接加到rc-local感觉有点low哈哈，还是用service管理起来方便）"><a href="#配置启动管理（直接加到rc-local感觉有点low哈哈，还是用service管理起来方便）" class="headerlink" title="配置启动管理（直接加到rc.local感觉有点low哈哈，还是用service管理起来方便）"></a>配置启动管理（直接加到rc.local感觉有点low哈哈，还是用service管理起来方便）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp shadowsocks-libev&#x2F;rpm&#x2F;SOURCES&#x2F;etc&#x2F;init.d&#x2F;shadowsocks-libev &#x2F;etc&#x2F;init.d&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>（shadowsocks-libev文件夹就是你git clone下来的文件夹）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x &#x2F;etc&#x2F;init.d&#x2F;shadowsocks-libev</span><br></pre></td></tr></table></figure>
+
+<p>如果编译配置的时候加了–prefix=/usr，那这个文件什么都不用改的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service shadowsocks-libev start #启动</span><br></pre></td></tr></table></figure>
+
+<p>*如果提示你缺少配置文件，那就是之前的config.json没做好或者放错地方了。</p>
+<p>到这里为止就算基本结束了，不过现在应该还用不了。因为端口还没有开放。<br>AMI基本放弃使用自己的防火墙，转而依靠AWS的安全策略来实现。（我早就受够了命令行下的防火墙策略了）<br>AWS的安全策略自己搜索吧，网上有的是教程。<br>最后一步就是：在AWS的安全策略里面打开自己设定的SS的端口，（TCP&amp;UDP）<br>OK，完成！</p>
+<p>ps 几乎和centos一样吧😅这就对了</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/10/06/%5B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%81%E7%A7%BB%5DAWS%20EC2%E4%B8%9C%E4%BA%AC%E6%9C%BA%E6%88%BF%E4%BB%A5%E5%8F%8AWordpress%E6%90%AC%E8%BF%81%E8%87%B3nginx%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98/" rel="prev" title="[服务器迁移]AWS EC2东京机房以及Wordpress搬迁至nginx的小问题">
+                  <i class="fa fa-chevron-left"></i> [服务器迁移]AWS EC2东京机房以及Wordpress搬迁至nginx的小问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/04/19/writting-vue-with-vscode/" rel="next" title="VS Codeを利用してVue開発">
+                  VS Codeを利用してVue開発 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">toyjack</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"toyjack.net","root":"/","images":"/images","scheme":"Muse","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"検索…","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+<meta name="description" content="スマホ弄りすぎか、ゴミ論文書き過ぎるか、なんか腱鞘炎になりそうな気がします。右手の親指の第一関節と第二関節がズキズキ痛いです。そのため、１日ネットでRealforceのキーボードさがしてサボりました。去年、母国で買ったあやしい中華キーボードを思い出したら、とりあえずそれで作業やろうかなっていう経緯です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[MAC]karabiner-elements使ってUSキーボードを快適に">
+<meta property="og:url" content="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/index.html">
+<meta property="og:site_name" content="toyjack&#39;s blog">
+<meta property="og:description" content="スマホ弄りすぎか、ゴミ論文書き過ぎるか、なんか腱鞘炎になりそうな気がします。右手の親指の第一関節と第二関節がズキズキ痛いです。そのため、１日ネットでRealforceのキーボードさがしてサボりました。去年、母国で買ったあやしい中華キーボードを思い出したら、とりあえずそれで作業やろうかなっていう経緯です。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0242.jpg">
+<meta property="og:image" content="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0247.jpg">
+<meta property="article:published_time" content="2017-04-30T06:28:28.000Z">
+<meta property="article:modified_time" content="2020-11-26T04:06:54.029Z">
+<meta property="article:author" content="toyjack">
+<meta property="article:tag" content="mac">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0242.jpg">
+
+
+<link rel="canonical" href="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'ja'
+  };
+</script>
+<title>[MAC]karabiner-elements使ってUSキーボードを快適に | toyjack's blog</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="ナビゲーションバーの切り替え">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">toyjack's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          見出し
+        </li>
+        <li class="sidebar-nav-overview">
+          概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">toyjack</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">ポスト</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">カテゴリ</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">タグ</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ja">
+    <link itemprop="mainEntityOfPage" href="http://toyjack.net/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="toyjack">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="toyjack's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [MAC]karabiner-elements使ってUSキーボードを快適に
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">投稿日</span>
+
+      <time title="作成日：2017-04-30 15:28:28" itemprop="dateCreated datePublished" datetime="2017-04-30T15:28:28+09:00">2017-04-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">編集日</span>
+        <time title="修正日：2020-11-26 13:06:54" itemprop="dateModified" datetime="2020-11-26T13:06:54+09:00">2020-11-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">カテゴリ</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>スマホ弄りすぎか、<del datetime="2017-04-30T14:27:35+00:00">ゴミ</del>論文書き過ぎるか、なんか腱鞘炎になりそうな気がします。右手の親指の第一関節と第二関節がズキズキ痛いです。<br>そのため、１日ネットでRealforceのキーボードさがしてサボりました。<br>去年、母国で買った<del datetime="2017-04-30T14:27:35+00:00">あやしい中華</del>キーボードを思い出したら、とりあえずそれで作業やろうかなっていう経緯です。</p>
+<p><a href="IMG_0242.jpg"><img src="/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0242.jpg"></a></p>
+<a id="more"></a>
+
+<p>こういうミニなやつです。使いにくいではないけど、赤軸とスチールプレードのせいで、打鍵音が大きくて、昼間は絶対研究室の近所迷惑となります。なので、ずっと封印されている状態でした。最近研究室のみなさんが割と早めに退室ので、夜でも使ってみようかっていう感じです。</p>
+<p>で、本<del>論</del>題に入りましょう。karabiner-elementsで配列を調整します。MacのJIS配列なれたので、次のように調整したいです。</p>
+<ul>
+<li>  CapsとControll交換</li>
+<li>  左CMDとOPT交換</li>
+<li>  右OPTをCMDにする</li>
+<li>  単独で左CMDを押すと英数とする</li>
+<li>  単独で右CMDを押すとかなとする</li>
+</ul>
+<p>ファンクションキーを単独機能するには、ちょっと特別なバージョンのkarabiner-elementsがいる。<a target="_blank" rel="noopener" href="https://github.com/wwwjfy/Karabiner-Elements/releases">wwwjfy/Karabiner-Elements</a>でダウンロードする。そして、~/.config/karabiner/karabiner.jsonを次にように編集して</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;global&quot;: &#123;</span><br><span class="line">        &quot;check_for_updates_on_startup&quot;: true,</span><br><span class="line">        &quot;show_in_menu_bar&quot;: true,</span><br><span class="line">        &quot;show_profile_name_in_menu_bar&quot;: false</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;profiles&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;devices&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: true,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 7,</span><br><span class="line">                        &quot;vendor_id&quot;: 1278</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: true,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 0,</span><br><span class="line">                        &quot;vendor_id&quot;: 13</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: false</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: true,</span><br><span class="line">                        &quot;product_id&quot;: 45075,</span><br><span class="line">                        &quot;vendor_id&quot;: 1133</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 627,</span><br><span class="line">                        &quot;vendor_id&quot;: 1452</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;disable_built_in_keyboard_if_exists&quot;: false,</span><br><span class="line">                    &quot;identifiers&quot;: &#123;</span><br><span class="line">                        &quot;is_keyboard&quot;: true,</span><br><span class="line">                        &quot;is_pointing_device&quot;: false,</span><br><span class="line">                        &quot;product_id&quot;: 65535,</span><br><span class="line">                        &quot;vendor_id&quot;: 1452</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;ignore&quot;: true</span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;fn_function_keys&quot;: &#123;</span><br><span class="line">                &quot;f1&quot;: &quot;display_brightness_decrement&quot;,</span><br><span class="line">                &quot;f10&quot;: &quot;mute&quot;,</span><br><span class="line">                &quot;f11&quot;: &quot;volume_decrement&quot;,</span><br><span class="line">                &quot;f12&quot;: &quot;volume_increment&quot;,</span><br><span class="line">                &quot;f2&quot;: &quot;display_brightness_increment&quot;,</span><br><span class="line">                &quot;f3&quot;: &quot;mission_control&quot;,</span><br><span class="line">                &quot;f4&quot;: &quot;launchpad&quot;,</span><br><span class="line">                &quot;f5&quot;: &quot;illumination_decrement&quot;,</span><br><span class="line">                &quot;f6&quot;: &quot;illumination_increment&quot;,</span><br><span class="line">                &quot;f7&quot;: &quot;rewind&quot;,</span><br><span class="line">                &quot;f8&quot;: &quot;play_or_pause&quot;,</span><br><span class="line">                &quot;f9&quot;: &quot;fastforward&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;name&quot;: &quot;Default profile&quot;,</span><br><span class="line">            &quot;one_to_many_mappings&quot;: &#123;&#125;,</span><br><span class="line">            &quot;selected&quot;: true,</span><br><span class="line">            &quot;simple_modifications&quot;: &#123;</span><br><span class="line">                &quot;caps_lock&quot;: &quot;left_control&quot;,</span><br><span class="line">                &quot;left_command&quot;: &quot;left_option&quot;,</span><br><span class="line">                &quot;left_control&quot;: &quot;caps_lock&quot;,</span><br><span class="line">                &quot;left_option&quot;: &quot;left_command&quot;,</span><br><span class="line">                &quot;right_option&quot;: &quot;right_command&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;standalone_keys&quot;: &#123;</span><br><span class="line">                &quot;left_option&quot;: &quot;japanese_eisuu&quot;,</span><br><span class="line">                &quot;right_option&quot;: &quot;japanese_kana&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;virtual_hid_keyboard&quot;: &#123;</span><br><span class="line">                &quot;caps_lock_delay_milliseconds&quot;: 0,</span><br><span class="line">                &quot;keyboard_type&quot;: &quot;ansi&quot;,</span><br><span class="line">                &quot;standalone_keys_delay_milliseconds&quot;: 100</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="IMG_0247.jpg"><img src="/2017/04/30/[MAC]karabiner-elements%E4%BD%BF%E3%81%A3%E3%81%A6US%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E5%BF%AB%E9%81%A9%E3%81%AB/IMG_0247.jpg"></a>
+ </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mac/" rel="tag"># mac</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/04/19/writting-vue-with-vscode/" rel="prev" title="VS Codeを利用してVue開発">
+                  <i class="fa fa-chevron-left"></i> VS Codeを利用してVue開発
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/06/07/start-using-hexo/" rel="next" title="WordPressをやめ、Hexoへ変換しました">
+                  WordPressをやめ、Hexoへ変換しました <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">toyjack</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>
